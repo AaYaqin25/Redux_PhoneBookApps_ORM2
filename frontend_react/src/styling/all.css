@@ -1,0 +1,44 @@
+.head {
+    text-align: center;
+}
+
+.card-header {
+    padding-top: 2%;
+    padding-bottom: 1%;
+}
+
+.col-form-label {
+    font-weight: bold;
+}
+
+#texthead {
+    font-weight:normal;
+}
+
+#btnadd{
+    background-color:rgb(51, 119, 174);
+    color:honeydew;
+}
+
+#btnsave {
+    background-color:rgb(51, 184, 51);
+    color:honeydew;
+    font-weight: bold
+}
+
+#btncancel {
+    background-color:orange;
+    color:rgb(236, 255, 236);
+    font-weight: bold
+}
+#btnedit {
+    background-color:rgb(51, 184, 51);
+    color:honeydew;
+    font-weight: bold
+}
+
+#btndelete {
+    background-color:crimson;
+    color: honeydew;
+    font-weight: bold
+}
