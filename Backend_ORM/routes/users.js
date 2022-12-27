@@ -107,6 +107,3 @@ router.delete('/:id', async function (req, res, next) {
 
 module.exports = router;
 
-
-// Executing (default): SELECT "id", "name", "phone", "createdAt", "updatedAt" FROM "Users" AS "User" WHERE ("User"."name" ILIKE '%yaq%');
-// Executing (default): SELECT "id", "name", "phone", "createdAt", "updatedAt" FROM "Users" AS "User" WHERE ("User"."name" ILIKE '%yaq%');
