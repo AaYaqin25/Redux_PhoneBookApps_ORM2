@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux'
-import { loadUser } from '../actions/users';
-import { setStatus } from '../actions/status';
+import { loadUser, searchUser} from '../actions/users';
 
 class UserFormSearch extends Component {
     constructor(props) {
@@ -23,16 +22,10 @@ class UserFormSearch extends Component {
     }
 
 
-
     handleSubmit = (event) => {
         event.preventDefault();
-        this.searchUser({ name: this.state.name, phone: this.state.phone })
+        this.props.search({ name: this.state.name, phone: this.state.phone })
         this.setState({ name: '', phone: '' })
-    }
-
-    searchUser = (query) => {
-        this.props.setStatus({...query, page: this.props.status.page = 1})
-        this.props.load()
     }
 
     render() {
@@ -61,14 +54,17 @@ class UserFormSearch extends Component {
     }
 }
 
-const mapStateToProps = (state) => ({
-    status: state.status
-})
+const mapStateToProps = (state) => {
+    return {
+        users: state.users.data,
+        params: state.users.params
+    }
+}
 
 // action
 const mapDispatchToProps = (dispatch, ownProps) => ({
     load: () => dispatch(loadUser()),
-    setStatus: (params) => dispatch(setStatus(params))
+    search: (query) => dispatch(searchUser(query))
 })
 
 export default connect(

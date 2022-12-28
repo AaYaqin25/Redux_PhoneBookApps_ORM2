@@ -1,8 +1,7 @@
 import { connect } from 'react-redux'
 import React, { Component } from "react"
 import UserItem from "../components/UserItem"
-import { loadUser, removeUser, resendUser, updateUser } from '../actions/users'
-import { setStatus } from '../actions/status'
+import { loadMore, loadUser, removeUser, resendUser, updateUser } from '../actions/users'
 
 class UserList extends Component {
 
@@ -13,15 +12,8 @@ class UserList extends Component {
     scrolling = (event) => {
         var element = event.target;
         if (element.scrollHeight - element.scrollTop - element.clientHeight <= 1) {
-            this.loadPagination()
+            this.props.loadMore()
         }
-    }
-
-    loadPagination = () => {
-        if (this.props.status.page <= this.props.status.totalPage) {
-            this.props.setStatus({ page: this.props.status.page + 1 })
-        }
-        this.props.status = this.props.status.page === this.props.status.totalPage ? [] : this.props.load()
     }
 
     render() {
@@ -49,10 +41,12 @@ class UserList extends Component {
     }
 }
 
-const mapStateToProps = (state, ownProps) => ({
-    users: state.users,
-    status: state.status
-})
+const mapStateToProps = (state, ownProps) => {
+    return {
+        users: state.users.data,
+        params: state.users.params
+    }
+}
 
 // action
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -60,7 +54,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     delete: (id) => dispatch(removeUser(id)),
     resend: (id, name, phone) => dispatch(resendUser(id, name, phone)),
     renew: (id, name, phone) => dispatch(updateUser(id, name, phone)),
-    setStatus: (params) => dispatch(setStatus(params))
+    loadMore: () => dispatch(loadMore())
 })
 
 export default connect(

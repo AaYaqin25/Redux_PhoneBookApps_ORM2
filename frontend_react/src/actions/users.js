@@ -1,28 +1,49 @@
 import axios from 'axios'
-import { setStatus } from './status';
 const request = axios.create({
     baseURL: 'http://localhost:3000/',
     timeout: 1000,
     headers: { 'Authorization': 'token' }
 });
 
-export const loadUserSuccess = (data, pageOne) => ({
+export const loadUserSuccess = (data, pageOne, page, totalPage) => ({
     type: 'LOAD_USER_SUCCESS',
     data,
-    pageOne
+    pageOne,
+    page,
+    totalPage
 })
 
 export const loadUserFailure = () => ({
     type: 'LOAD_USER_FAILURE'
 })
 
-export const loadUser = () => (dispatch, getState) => request.get('users', { params: getState().status })
+export const loadUser = () => (dispatch, getState) => request.get('users', { params: getState().users.params })
     .then(({ data }) => {
-        dispatch(setStatus({ page: data.data.page, totalPage: data.data.totalPage }))
-        dispatch(loadUserSuccess(data.data.result, data.data.page === 1 ? true : false))
+        dispatch(loadUserSuccess(data.data.result, data.data.page === 1 ? true : false, data.data.page, data.data.totalPage))
     }).catch((err) => {
         dispatch(loadUserFailure())
     })
+
+
+export const loadMoreSuccsess = () => ({
+    type: 'LOAD_MORE_SUCCESS'
+})
+
+export const loadMoreFailure = () => ({
+    type: 'LOAD_MORE_FAILURE'
+})
+
+
+export const loadMore = () => (dispatch, getState) => request.get('users')
+    .then(({ data }) => {
+        let state = getState()
+        if (state.users.params.page <= state.users.params.totalPage) {
+            dispatch(loadMoreSuccsess()).then(dispatch(loadUser()))
+        }
+    }).catch((err) => {
+        dispatch(loadMoreFailure(err))
+    })
+
 
 
 export const addUserSuccess = (id, data) => ({
@@ -90,7 +111,6 @@ export const updateUserFailure = () => ({
 
 export const updateUser = (id, name, phone) => dispatch => request.put(`users/${id}`, { name, phone })
     .then(({ data }) => {
-        console.log(data.data, 'ini update');
         dispatch(updateUserSuccess(id, data.data))
     }).catch((err) => {
         dispatch(updateUserFailure(err))
@@ -115,4 +135,20 @@ export const resendUser = (id, name, phone) => dispatch => request.post('users',
         dispatch(resendUserFailure(err))
     })
 
+export const searchUserSuccess = (data) => ({
+    type: 'SEARCH_USER_SUCCESS',
+    data
+
+})
+
+export const searchUserFailure = () => ({
+    type: 'SEARCH_USER_FAILURE'
+})
+
+export const searchUser = (query) => (dispatch) => request.get('users')
+    .then(({ data }) => {
+        dispatch(searchUserSuccess(query)).then(dispatch(loadUser()))
+    }).catch((err) => {
+        dispatch(searchUserFailure(err))
+    })
 
