@@ -54,6 +54,7 @@ const mapStateToProps = (state, ownProps) => ({
     status: state.status
 })
 
+// action
 const mapDispatchToProps = (dispatch, ownProps) => ({
     load: () => dispatch(loadUser()),
     delete: (id) => dispatch(removeUser(id)),

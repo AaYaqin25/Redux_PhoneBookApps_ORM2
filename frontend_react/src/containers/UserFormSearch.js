@@ -65,7 +65,7 @@ const mapStateToProps = (state) => ({
     status: state.status
 })
 
-
+// action
 const mapDispatchToProps = (dispatch, ownProps) => ({
     load: () => dispatch(loadUser()),
     setStatus: (params) => dispatch(setStatus(params))
