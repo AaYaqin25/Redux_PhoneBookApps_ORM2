@@ -8,10 +8,10 @@ const users = (state = {
     switch (action.type) {
         case 'LOAD_USER_SUCCESS':
             return {
-                data: [...(action.pageOne ? [] : state.data), ...action.data.map(item => {
+                data: action.data.map(item => {
                     item.sent = true
                     return item
-                })],
+                }),
                 params: {
                     page: action.page,
                     totalPage: action.totalPage
@@ -21,22 +21,21 @@ const users = (state = {
             break
         case 'LOAD_MORE_SUCCESS':
             return {
-                ...state,
-                params: {
-                    ...state.params,
-                    page: state.params.page + 1
-                }
+                data: [...state.data, ...action.data.value.map(item => {
+                    item.sent = true
+                    return item
+                })],
+                params: action.data.params
             }
         case 'LOAD_MORE_FAILURE':
             break
         case 'SEARCH_USER_SUCCESS':
             return {
-                ...state,
-                params: {
-                    ...state.params,
-                    ...action.data,
-                    page: 1
-                }
+                data: action.data.value.map(item => {
+                    item.sent = true
+                    return item
+                }),
+                params: action.data.params
             }
         case 'SEARCH_USER_FAILURE':
             break

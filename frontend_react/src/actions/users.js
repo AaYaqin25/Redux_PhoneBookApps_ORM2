@@ -5,12 +5,11 @@ const request = axios.create({
     headers: { 'Authorization': 'token' }
 });
 
-export const loadUserSuccess = (data, pageOne, page, totalPage) => ({
+export const loadUserSuccess = (data, page, totalPage) => ({
     type: 'LOAD_USER_SUCCESS',
     data,
-    pageOne,
     page,
-    totalPage
+    totalPage,
 })
 
 export const loadUserFailure = () => ({
@@ -19,14 +18,15 @@ export const loadUserFailure = () => ({
 
 export const loadUser = () => (dispatch, getState) => request.get('users', { params: getState().users.params })
     .then(({ data }) => {
-        dispatch(loadUserSuccess(data.data.result, data.data.page === 1 ? true : false, data.data.page, data.data.totalPage))
+        dispatch(loadUserSuccess(data.data.result, data.data.page, data.data.totalPage))
     }).catch((err) => {
         dispatch(loadUserFailure())
     })
 
 
-export const loadMoreSuccsess = () => ({
-    type: 'LOAD_MORE_SUCCESS'
+export const loadMoreSuccsess = (data) => ({
+    type: 'LOAD_MORE_SUCCESS',
+    data
 })
 
 export const loadMoreFailure = () => ({
@@ -34,15 +34,22 @@ export const loadMoreFailure = () => ({
 })
 
 
-export const loadMore = () => (dispatch, getState) => request.get('users')
-    .then(({ data }) => {
-        let state = getState()
-        if (state.users.params.page <= state.users.params.totalPage) {
-            dispatch(loadMoreSuccsess()).then(dispatch(loadUser()))
+export const loadMore = () => (dispatch, getState) => {
+    let state = getState()
+    if (state.users.params.page < state.users.params.totalPage) {
+        let params = {
+            ...state.users.params,
+            page: state.users.params.page + 1
         }
-    }).catch((err) => {
-        dispatch(loadMoreFailure(err))
-    })
+        request.get('users', { params: params }).then(({ data }) => {
+            params = {
+                ...params,
+                totalPage: data.data.totalPage
+            }
+            dispatch(loadMoreSuccsess({ value: data.data.result, params }))
+        })
+    }
+}
 
 
 
@@ -145,10 +152,24 @@ export const searchUserFailure = () => ({
     type: 'SEARCH_USER_FAILURE'
 })
 
-export const searchUser = (query) => (dispatch) => request.get('users')
-    .then(({ data }) => {
-        dispatch(searchUserSuccess(query)).then(dispatch(loadUser()))
-    }).catch((err) => {
-        dispatch(searchUserFailure(err))
+export const searchUser = (query) => (dispatch, getState) => {
+    let state = getState()
+    let params = {
+        ...state.users.params,
+        ...query,
+        page: 1
+    }
+    request.get('users', { params }).then(({ data }) => {
+        params = {
+            ...params,
+            totalPage: data.data.totalPage
+        }
+        dispatch(searchUserSuccess({ value: data.data.result, params }))
     })
+}
+
+
+
+
+
 
