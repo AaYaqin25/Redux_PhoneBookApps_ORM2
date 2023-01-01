@@ -75,7 +75,9 @@ export const addUserRedux = (id, name, phone) => ({
 
 export const addUser = (name, phone) => dispatch => {
     const id = Date.now()
-    dispatch(addUserRedux(id, name, phone))
+    if (!dispatch(searchUser())) {
+        dispatch(addUserRedux(id, name, phone))
+    }
     return request.post('users', { name, phone })
         .then(({ data }) => {
             dispatch(addUserSuccess(id, data.data))
