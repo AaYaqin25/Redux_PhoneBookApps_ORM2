@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux'
-import { loadUser, searchUser} from '../actions/users';
+import { loadUser, searchUser } from '../actions/users';
 
 class UserFormSearch extends Component {
     constructor(props) {
@@ -54,12 +54,10 @@ class UserFormSearch extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        users: state.users.data,
-        params: state.users.params
-    }
-}
+const mapStateToProps = (state) => ({
+    users: state.users.data
+
+})
 
 // action
 const mapDispatchToProps = (dispatch, ownProps) => ({

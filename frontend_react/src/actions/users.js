@@ -16,7 +16,7 @@ export const loadUserFailure = () => ({
     type: 'LOAD_USER_FAILURE'
 })
 
-export const loadUser = () => (dispatch, getState) => request.get('users', { params: getState().users.params })
+export const loadUser = () => (dispatch, getState) => request.get('users')
     .then(({ data }) => {
         dispatch(loadUserSuccess(data.data.result, data.data.page, data.data.totalPage))
     }).catch((err) => {
