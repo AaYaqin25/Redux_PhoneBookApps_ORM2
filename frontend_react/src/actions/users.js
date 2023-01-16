@@ -170,6 +170,12 @@ export const searchUser = (query) => (dispatch, getState) => {
     })
 }
 
+export const resetUser = () => (dispatch, getState) => {
+    let state = getState()
+    state.users.params = { page: 1, totalPage: 1, query: {} }
+    dispatch(loadUser())
+}
+
 
 
 

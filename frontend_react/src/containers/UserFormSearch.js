@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux'
-import { loadUser, searchUser } from '../actions/users';
+import { loadUser, resetUser, searchUser } from '../actions/users';
 
 class UserFormSearch extends Component {
     constructor(props) {
@@ -25,6 +25,10 @@ class UserFormSearch extends Component {
     handleSubmit = (event) => {
         event.preventDefault();
         this.props.search({ name: this.state.name, phone: this.state.phone })
+    }
+
+    handleResetSearch = () => {
+        this.props.reset()
         this.setState({ name: '', phone: '' })
     }
 
@@ -47,6 +51,7 @@ class UserFormSearch extends Component {
                     </div>
                     <div className="col-auto">
                         <button className='btn btn-primary' ><i className="fa-regular fa-circle-check"></i> search</button>
+                        <button className='btn btn-dark' onClick={this.handleResetSearch}><i className="fa-solid fa-rotate"></i> reset</button>
                     </div>
                 </div>
             </form>
@@ -62,7 +67,8 @@ const mapStateToProps = (state) => ({
 // action
 const mapDispatchToProps = (dispatch, ownProps) => ({
     load: () => dispatch(loadUser()),
-    search: (query) => dispatch(searchUser(query))
+    search: (query) => dispatch(searchUser(query)),
+    reset: () => dispatch(resetUser())
 })
 
 export default connect(
